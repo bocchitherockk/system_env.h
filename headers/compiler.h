@@ -49,15 +49,19 @@
     #define COMPILER_NAME "msvc"
     #undef COMPILER_MSVC
     #define COMPILER_MSVC 1
-    #define COMPILER_VERSION_MAJOR (_MSC_VER / 100)
-    #define COMPILER_VERSION_MINOR (_MSC_VER % 100)
     // the patch starting from Visual C++ 6.0 (_MSC_VER = 1200) is represented on 4 digits.
     // the patch starting from Visual C++ 8.0 (_MSC_VER = 1400) is represented on 5 digits.
     #if _MSC_VER >= 1400
+        #define COMPILER_VERSION_MAJOR ((_MSC_VER / 100000) / 100)
+        #define COMPILER_VERSION_MINOR ((_MSC_VER / 100000) % 100)
         #define COMPILER_VERSION_PATCH (_MSC_VER % 100000)
     #elif _MSC_VER >= 1200
+        #define COMPILER_VERSION_MAJOR ((_MSC_VER / 10000) / 100)
+        #define COMPILER_VERSION_MINOR ((_MSC_VER / 10000) % 100)
         #define COMPILER_VERSION_PATCH (_MSC_VER % 10000)
     #else
+        #define COMPILER_VERSION_MAJOR (_MSC_VER / 100)
+        #define COMPILER_VERSION_MINOR (_MSC_VER % 100)
         #define COMPILER_VERSION_PATCH 0
     #endif
     #pragma message("this compiler is not tested yet.")
