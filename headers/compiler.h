@@ -60,7 +60,6 @@
     #else
         #define COMPILER_VERSION_PATCH 0
     #endif
-    #pragma message("this compiler is not tested yet.")
 
 #elif defined(__CC_ARM) && defined(__ARMCC_VERSION)
     // __ARMCC_VERSION = VRPBBB; V = Version; R = Revision; P = Patch; BBB = Build
