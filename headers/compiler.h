@@ -17,7 +17,7 @@
     #define COMPILER_VERSION_MAJOR __EMSCRIPTEN_major__
     #define COMPILER_VERSION_MINOR __EMSCRIPTEN_minor__
     #define COMPILER_VERSION_PATCH __EMSCRIPTEN_tiny__
-    #pragma message("this compiler is not tested yet")
+    #pragma message("this compiler is not tested yet.")
 #elif defined(__clang__)
     #define COMPILER_NAME "clang"
     #undef COMPILER_CLANG
@@ -35,7 +35,7 @@
     #define COMPILER_VERSION_MAJOR (__INTEL_COMPILER / 100)
     #define COMPILER_VERSION_MINOR ((__INTEL_COMPILER / 10) % 10)
     #define COMPILER_VERSION_PATCH (__INTEL_COMPILER % 10)
-    #pragma message("this compiler is not tested yet")
+    #pragma message("this compiler is not tested yet.")
 
 #elif defined(__TINYC__)
     #define COMPILER_NAME "tcc"
@@ -51,9 +51,16 @@
     #define COMPILER_MSVC 1
     #define COMPILER_VERSION_MAJOR (_MSC_VER / 100)
     #define COMPILER_VERSION_MINOR (_MSC_VER % 100)
-    // the patch starting from Visual C++ 8.0 is represented on 5 digits so it should be changed to % 100000
-    // #define COMPILER_VERSION_PATCH (_MSC_FULL_VER % 10000)
-    #pragma message("this compiler is not tested yet")
+    // the patch starting from Visual C++ 6.0 (_MSC_VER = 1200) is represented on 4 digits.
+    // the patch starting from Visual C++ 8.0 (_MSC_VER = 1400) is represented on 5 digits.
+    #if _MSC_VER >= 1400
+        #define COMPILER_VERSION_PATCH (_MSC_VER % 100000)
+    #elif _MSC_VER >= 1200
+        #define COMPILER_VERSION_PATCH (_MSC_VER % 10000)
+    #else
+        #define COMPILER_VERSION_PATCH 0
+    #endif
+    #pragma message("this compiler is not tested yet.")
 
 #elif defined(__CC_ARM) && defined(__ARMCC_VERSION)
     // __ARMCC_VERSION = VRPBBB; V = Version; R = Revision; P = Patch; BBB = Build
@@ -63,16 +70,7 @@
     #define COMPILER_VERSION_MAJOR (__ARMCC_VERSION / 100000)
     #define COMPILER_VERSION_MINOR ((__ARMCC_VERSION / 10000) % 10)
     #define COMPILER_VERSION_PATCH ((__ARMCC_VERSION / 1000) % 10)
-    #pragma message("this compiler is not tested yet")
-
-#elif defined(__MINGW32__)
-    #define COMPILER_NAME "mingw32"
-    #undef COMPILER_MINGW
-    #define COMPILER_MINGW 1
-    #define COMPILER_VERSION_MAJOR __MINGW32_MAJOR_VERSION
-    #define COMPILER_VERSION_MINOR __MINGW32_MINOR_VERSION
-    #define COMPILER_VERSION_PATCH 0 // MinGW does not define patch level
-    #pragma message("this compiler is not tested yet")
+    #pragma message("this compiler is not tested yet.")
 
 #elif defined(__MINGW64__)
     #define COMPILER_NAME "mingw64"
@@ -81,7 +79,16 @@
     #define COMPILER_VERSION_MAJOR __MINGW64_VERSION_MAJOR
     #define COMPILER_VERSION_MINOR __MINGW64_VERSION_MINOR
     #define COMPILER_VERSION_PATCH 0 // MinGW does not define patch level
-    #pragma message("this compiler is not tested yet")
+    #pragma message("this compiler is not tested yet.")
+    // i don't know if this is even a thing
+
+#elif defined(__MINGW32__)
+    #define COMPILER_NAME "mingw32"
+    #undef COMPILER_MINGW
+    #define COMPILER_MINGW 1
+    #define COMPILER_VERSION_MAJOR __MINGW32_MAJOR_VERSION
+    #define COMPILER_VERSION_MINOR __MINGW32_MINOR_VERSION
+    #define COMPILER_VERSION_PATCH 0 // MinGW does not define patch level
 
 #elif defined(__GNUC__)
     // i put this at the end because i think even clang and intel define this macro
