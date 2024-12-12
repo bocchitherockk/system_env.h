@@ -14,10 +14,10 @@
     #define COMPILER_NAME "emscripten"
     #undef COMPILER_EMSCRIPTEN
     #define COMPILER_EMSCRIPTEN 1
-    #define COMPILER_VERSION_MAJOR __EMSCRIPTEN_major__
-    #define COMPILER_VERSION_MINOR __EMSCRIPTEN_minor__
-    #define COMPILER_VERSION_PATCH __EMSCRIPTEN_tiny__
-    #pragma message("this compiler is not tested yet.")
+    #define COMPILER_VERSION_MAJOR 0
+    #define COMPILER_VERSION_MINOR 0
+    #define COMPILER_VERSION_PATCH 0
+    // As of my knowledge, emscripten does not define version macros
 #elif defined(__clang__)
     #define COMPILER_NAME "clang"
     #undef COMPILER_CLANG
@@ -96,7 +96,11 @@
     #define COMPILER_GCC 1
     #define COMPILER_VERSION_MAJOR __GNUC__
     #define COMPILER_VERSION_MINOR __GNUC_MINOR__
-    #define COMPILER_VERSION_PATCH __GNUC_PATCHLEVEL__
+    #if defined(__GNUC_PATCHLEVEL__)
+        #define COMPILER_VERSION_PATCH __GNUC_PATCHLEVEL__
+    #else
+        #define COMPILER_VERSION_PATCH 0
+    #endif
 
 #else
     #define COMPILER_NAME "unknown"
@@ -109,7 +113,10 @@
 // Feature Detection Based on Previously Detected Compiler
 // note: as i said others that have not been tested yet are not included
 // note: i'll be adding more features as i need them
-#define COMPILER_SUPPORTS_TYPEOF                (COMPILER_GCC || COMPILER_CLANG || COMPILER_TCC)
-#define COMPILER_SUPPORTS_STATEMENT_EXPRESSIONS (COMPILER_GCC || COMPILER_CLANG || COMPILER_TCC)
-#define COMPILER_SUPPORTS_NESTED_FUNCTIONS      (COMPILER_GCC)
-#define COMPILER_SUPPORTS_BUILTIN_CLZ           (COMPILER_GCC || COMPILER_CLANG)
+/* mingw is based on gcc */
+/* emscripten is based on clang */
+/* msvc was tested, and it supports none of those features */
+#define COMPILER_SUPPORTS_TYPEOF                (COMPILER_GCC || COMPILER_CLANG || COMPILER_TCC || COMPILER_MINGW || COMPILER_EMSCRIPTEN)
+#define COMPILER_SUPPORTS_STATEMENT_EXPRESSIONS (COMPILER_GCC || COMPILER_CLANG || COMPILER_TCC || COMPILER_MINGW || COMPILER_EMSCRIPTEN)
+#define COMPILER_SUPPORTS_NESTED_FUNCTIONS      (COMPILER_GCC || COMPILER_MINGW)
+#define COMPILER_SUPPORTS_BUILTIN_CLZ           (COMPILER_GCC || COMPILER_CLANG || COMPILER_MINGW || COMPILER_EMSCRIPTEN)
